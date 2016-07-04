@@ -17,12 +17,12 @@ sed -i -e "s/jm_heap/$FLINK_JM_RAM/g" $CONF/flink-conf.yaml
 
 containers=$(curl http://rancher-metadata/latest/containers)
 
-for container in containers;
+for element in $containers;
 do
-	plain=$(echo ${$container#*=})
+	plain=${$element#*=}
 	if grep -q jobmanager <<<$plain; then
 		echo "Found Jobmanager Hostname: $plain"
-		sed -i -e "s/jm_hostname/$plain/g" $CONF/flink-conf.yaml	
+		sed -i -e "s/jm_hostname/$plain/g" "$CONF"/flink-conf.yaml	
 	fi	
 done
 
@@ -30,13 +30,13 @@ done
 if [ "$1" == "master" ]; then
 	echo "Setting up Jobmanager on this Node!"
 	echo "Getting Container List for Service Taskmanager"
-	source $EXEC/getContainerListForService.sh taskmanager
+	source /usr/local/flink-1.0.3/bin/getContainerListForService.sh taskmanager
 	
 	echo "Saving Taskmanagers to slaves File"
-	for host_name in ${!CONTAINER[@]};
+	for host_name in "${!CONTAINER[@]}";
 	do
 		echo "Adding Taskmanager $host_name"
-		echo $host_name >> $CONF/slaves	
+		echo "$host_name" >> "$CONF"/slaves	
 	done
 
 	$EXEC/start-cluster.sh streaming     
