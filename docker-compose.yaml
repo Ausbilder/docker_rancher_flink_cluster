@@ -1,0 +1,28 @@
+jobmanager:
+   image: svenahlfeld/flinkcluster:1.0.3
+   labels:
+   - io.rancher.container.hostname_override=container_name
+   ports:
+   - 48081:8081
+   expose:
+   - 6123
+   - 22
+   external_links:
+   - zookeeper/zk
+   - kafka/broker
+   - redis/redis
+   links:
+   - taskmanager
+   command: /usr/local/flink-1.0.3/bin/start-flink-cluster.sh master
+
+taskmanager:
+   labels:
+   - io.rancher.container.hostname_override=container_name
+   image: svenahlfeld/flinkcluster:1.0.3
+   expose:
+   - 6121
+   - 6122
+   external_links:
+   - zookeeper/zk
+   - kafka/broker
+   - redis/redis
