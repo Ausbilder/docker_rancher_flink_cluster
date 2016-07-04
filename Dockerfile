@@ -21,6 +21,10 @@ RUN chmod +x $FLINK_HOME/bin/start-flink-cluster.sh
 ADD bin/rancher-config.sh $FLINK_HOME/bin
 RUN chmod +x $FLINK_HOME/bin/rancher-config.sh
 
+#add rancher container script
+ADD bin/getContainerListForService.sh $FLINK_HOME/bin
+RUN chmod +x $FLINK_HOME/bin/getContainerListForService.sh
+
 #PORTS
 EXPOSE 22 3306 6121 6122 6123 8080 8081
 

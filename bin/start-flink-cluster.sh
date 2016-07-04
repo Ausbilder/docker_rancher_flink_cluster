@@ -30,7 +30,7 @@ done
 if [ "$1" == "master" ]; then
 	echo "Setting up Jobmanager on this Node!"
 	echo "Getting Container List for Service Taskmanager"
-	source CONF/getContainerListForService.sh taskmanager
+	source $EXEC/getContainerListForService.sh taskmanager
 	
 	echo "Saving Taskmanagers to slaves File"
 	for host_name in ${!CONTAINER[@]};
