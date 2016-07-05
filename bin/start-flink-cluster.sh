@@ -19,7 +19,7 @@ containers=$(curl http://rancher-metadata/latest/containers)
 
 for element in $containers;
 do
-	plain=${"$element"#*=}
+	plain=${element#*=}
 	if grep -q jobmanager <<<$plain; then
 		echo "Found Jobmanager Hostname: $plain"
 		sed -i -e "s/jm_hostname/$plain/g" "$CONF"/flink-conf.yaml	

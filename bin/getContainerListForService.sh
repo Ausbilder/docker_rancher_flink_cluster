@@ -4,8 +4,9 @@ declare -A CONTAINER
 container_map=$(curl http://rancher-metadata/latest/services/$1/containers)	
 for host in $container_map;
 do
-	index=`expr index "$host" =`
-	container_name=${host:index+1}
+	#index=`expr index "$host" =`
+	#container_name=${host:index+1}
+	container_name=${host#*=}
 	container_ip=$(curl http://rancher-metadata/latest/containers/$container_name/primary_ip)
 	CONTAINER+=(["$container_name"]="$container_ip")
 done
