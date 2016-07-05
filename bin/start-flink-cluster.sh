@@ -20,6 +20,8 @@ if [ "$1" == "master" ]; then
 	echo "Setting up Jobmanager on this Node!"
 
 	sed -i -e "s/jm_hostname/$(hostname)/g" $CONF/flink-conf.yaml	
+		
+	sleep 20s
 
 	echo "Getting Container List for Service Taskmanager"
 	source /usr/local/flink-1.0.3/bin/getContainerListForService.sh taskmanager
