@@ -15,20 +15,12 @@ sed -i -e "s/tm_slots/$FLINK_TM_SLOTS/g" $CONF/flink-conf.yaml
 sed -i -e "s/tm_heap/$FLINK_TM_RAM/g" $CONF/flink-conf.yaml
 sed -i -e "s/jm_heap/$FLINK_JM_RAM/g" $CONF/flink-conf.yaml
 
-containers=$(curl http://rancher-metadata/latest/containers)
-
-for element in $containers;
-do
-	plain=${element#*=}
-	if grep -q jobmanager <<<$plain; then
-		echo "Found Jobmanager Hostname: $plain"
-		sed -i -e "s/jm_hostname/$plain/g" "$CONF"/flink-conf.yaml	
-	fi	
-done
-
 #start master
 if [ "$1" == "master" ]; then
 	echo "Setting up Jobmanager on this Node!"
+
+	sed -i -e "s/jm_hostname/$(hostname)/g" $CONF/flink-conf.yaml	
+
 	echo "Getting Container List for Service Taskmanager"
 	source /usr/local/flink-1.0.3/bin/getContainerListForService.sh taskmanager
 	
@@ -43,6 +35,11 @@ if [ "$1" == "master" ]; then
 
 #start client
 else
+	stack=$(curl http://rancher-metadata/latest/self/stack/name)
+	jobmanager_hostname="$stack"_jobmanager_1
+	echo "Setting Jobmanager Hostname: $jobmanager_hostname"		
+	sed -i -e "s/jm_hostname/$jobmanager_hostname/g" $CONF/flink-conf.yaml	
+
 	echo "Setting up Taskmanager"
 	echo "I am a worker Node, waiting for ssh connection of Master"
 fi
